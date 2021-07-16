@@ -14,6 +14,7 @@ export default function ContentImage(props) {
             src={domNode.attribs.src} 
             width={domNode.attribs.width} 
             height={domNode.attribs.height}
+            alt={`Image for ${domNode.attribs.src}`}
           />
         )
       }
