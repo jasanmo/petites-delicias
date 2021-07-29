@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Categories({ categories }) {
   return (
     <span className="ml-1">
@@ -5,7 +7,11 @@ export default function Categories({ categories }) {
       {categories.edges.length > 0 ? (
         categories.edges.map((category, index) => (
           <span key={index} className="ml-1">
-            {category.node.name}
+            <Link href={`/categories/${category.node.slug}`}>
+              <a>
+                {category.node.name}
+              </a>
+            </Link>
           </span>
         ))
       ) : (
