@@ -29,7 +29,11 @@ const { href, title, body, date, imageUrl, author, categories } = Astro.props;
     <span class="text-sm">{date}</span>
   </div>
   <a href={href}>
-    <img class="rounded-lg object-cover max-h-80 w-full mb-7" src={imageUrl} />
+    <img
+      class="rounded-lg object-cover max-h-80 w-full mb-7"
+      src={imageUrl}
+      loading="lazy"
+    />
   </a>
   <h2
     class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
