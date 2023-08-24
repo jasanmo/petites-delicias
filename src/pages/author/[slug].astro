@@ -1,0 +1,84 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { contentfulClient } from "../../lib/contentful";
+import type { RecipePost, Person } from "../../lib/contentful";
+import { formatDate } from "../../services/formatDate";
+import { marked } from "marked";
+import Card from "../../components/Card.astro";
+
+let posts;
+let category;
+const { slug } = Astro.params;
+try {
+  const response = await contentfulClient.getEntries<Person>({
+    content_type: "person",
+    "fields.slug": slug,
+  });
+  category = response.items[0];
+
+  const entries = await contentfulClient.getEntries<RecipePost>({
+    content_type: "recipe",
+    "fields.author.sys.id": category.sys.id,
+  });
+
+  posts = entries.items.map((item) => {
+    const {
+      title,
+      publishDate,
+      description,
+      slug,
+      featuredImage,
+      categories,
+      author,
+      excerpt,
+    } = item.fields;
+    const post = {
+      title: title,
+      description: marked.lexer(description)[0].text,
+      slug: slug,
+      publishDate: formatDate(publishDate),
+      featuredImage: featuredImage.fields.file.url,
+      author: author.fields,
+      excerpt: excerpt,
+      categories: categories?.map(({ fields }) => fields),
+    };
+    return post;
+  });
+} catch (error) {
+  return Astro.redirect("/404");
+}
+---
+
+<Layout title={category.fields.name}>
+  <main>
+    <section class="bg-white dark:bg-gray-900">
+      <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+        <div class="mx-auto max-w-screen-sm text-center lg:mb-16 mb-8">
+          <h1
+            class="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white"
+          >
+            {category.fields.name}
+          </h1>
+          <p class="font-light text-gray-500 sm:text-xl dark:text-gray-400">
+            Recetas francesas y del mundo.
+          </p>
+        </div>
+        <div class="grid gap-8 lg:grid-cols-2">
+          {
+            posts?.map((post) => (
+              <Card
+                title={post?.title}
+                body={post?.excerpt}
+                href={`/${post.slug}`}
+                date={post?.publishDate}
+                imageUrl={post?.featuredImage}
+                author={post?.author}
+                categories={post?.categories}
+              />
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
