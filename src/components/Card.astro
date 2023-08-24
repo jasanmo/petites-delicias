@@ -1,61 +1,63 @@
 ---
+import Category from "./Category.astro";
+import Author from "./Author.astro";
+import type { Categories, Person } from "../lib/contentful";
 interface Props {
-	title: string;
-	body: string;
-	href: string;
+  title: string;
+  body?: string;
+  href: string;
+  date?: string;
+  imageUrl?: string;
+  author?: Person["fields"];
+  categories?: Array<Categories["fields"]>;
 }
 
-const { href, title, body } = Astro.props;
+const { href, title, body, date, imageUrl, author, categories } = Astro.props;
 ---
 
-<li class="link-card">
-	<a href={href}>
-		<h2>
-			{title}
-			<span>&rarr;</span>
-		</h2>
-		<p>
-			{body}
-		</p>
-	</a>
-</li>
-<style>
-	.link-card {
-		list-style: none;
-		display: flex;
-		padding: 1px;
-		background-color: #23262d;
-		background-image: none;
-		background-size: 400%;
-		border-radius: 7px;
-		background-position: 100%;
-		transition: background-position 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-		box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-	}
-	.link-card > a {
-		width: 100%;
-		text-decoration: none;
-		line-height: 1.4;
-		padding: calc(1.5rem - 1px);
-		border-radius: 8px;
-		color: white;
-		background-color: #23262d;
-		opacity: 0.8;
-	}
-	h2 {
-		margin: 0;
-		font-size: 1.25rem;
-		transition: color 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-	}
-	p {
-		margin-top: 0.5rem;
-		margin-bottom: 0;
-	}
-	.link-card:is(:hover, :focus-within) {
-		background-position: 0;
-		background-image: var(--accent-gradient);
-	}
-	.link-card:is(:hover, :focus-within) h2 {
-		color: rgb(var(--accent-light));
-	}
-</style>
+<article
+  class="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
+>
+  <div class="flex justify-between items-center mb-5 text-gray-500">
+    <div class="flex justify-between items-center gap-2">
+      {
+        categories?.map(({ name, slug }) => (
+          <Category name={name} href={`/category/${slug}`} />
+        ))
+      }
+    </div>
+    <span class="text-sm">{date}</span>
+  </div>
+  <a href={href}>
+    <img class="rounded-lg object-cover max-h-80 w-full mb-7" src={imageUrl} />
+  </a>
+  <h2
+    class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+  >
+    <a href={href}>{title}</a>
+  </h2>
+  <p
+    class="mb-5 font-light text-gray-500 dark:text-gray-400 line-clamp-3 text-ellipsis"
+  >
+    {body}
+  </p>
+  <div class="flex justify-between items-center">
+    <Author name={author?.name} href={`/author/${author?.slug}`} />
+    <a
+      href={href}
+      class="inline-flex items-center font-medium text-primary-600 dark:text-primary-500 hover:underline"
+    >
+      Read more
+      <svg
+        class="ml-2 w-4 h-4"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+        ><path
+          fill-rule="evenodd"
+          d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+          clip-rule="evenodd"></path></svg
+      >
+    </a>
+  </div>
+</article>
