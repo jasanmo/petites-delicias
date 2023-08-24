@@ -1,4 +1,14 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
+
+import tailwind from "@astrojs/tailwind";
 
 // https://astro.build/config
-export default defineConfig({});
+export default defineConfig({
+	output: "server",
+	integrations: [tailwind()],
+	vite: {
+		ssr: {
+			noExternal: ["astro-seo-schema"],
+		},
+	},
+});
