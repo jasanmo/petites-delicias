@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://petitesdelicias.com/sitemap-index.xml
