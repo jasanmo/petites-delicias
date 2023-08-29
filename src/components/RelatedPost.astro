@@ -1,0 +1,36 @@
+---
+interface Props {
+  title: string;
+  excerpt?: string;
+  href: string;
+  imageUrl?: string;
+}
+
+const { href, title, excerpt, imageUrl } = Astro.props;
+---
+
+<article class="max-w-xs">
+  <a href={href}>
+    <img
+      src={imageUrl}
+      class="mb-5 rounded-lg max-h-40 object-cover h-44 w-full"
+      alt="Image 1"
+    />
+  </a>
+  <h2
+    class="mb-2 text-xl font-bold leading-tight text-gray-900 dark:text-white"
+  >
+    <a href={href}>{title}</a>
+  </h2>
+  <p
+    class="mb-4 font-light text-gray-500 dark:text-gray-400 line-clamp-3 text-ellipsis"
+  >
+    {excerpt}
+  </p>
+  <a
+    href={href}
+    class="inline-flex items-center font-medium underline underline-offset-4 text-primary-600 dark:text-primary-500 hover:no-underline"
+  >
+    Read in 2 minutes
+  </a>
+</article>
