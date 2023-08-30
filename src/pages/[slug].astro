@@ -4,7 +4,6 @@ import { contentfulClient } from "../lib/contentful";
 import type { Asset } from "contentful";
 import type { RecipePost, Categories, Person } from "../lib/contentful";
 import { marked, lexer } from "marked";
-import { Schema } from "astro-seo-schema";
 import { formatDate } from "../services/formatDate";
 import Category from "../components/Category.astro";
 import RelatedPost from "../components/RelatedPost.astro";
@@ -82,30 +81,6 @@ try {
 ---
 
 <Layout title={post?.title}>
-  <Schema
-    item={{
-      "@context": "https://schema.org",
-      "@type": "Recipe",
-      name: post?.title,
-      author: {
-        "@type": "Person",
-        name: post?.author,
-      },
-      datePublished: post?.publishDate,
-      description: post?.excerpt,
-      image: post?.featuredImage,
-      recipeCategory: post?.categories.map(
-        (category: Categories["fields"]) => category.name
-      ),
-      recipeIngredient: ingredients?.map((ingredient) => ingredient.text),
-      recipeInstructions: steps?.map((step) => {
-        return {
-          "@type": "HowToStep",
-          text: marked(step?.text),
-        };
-      }),
-    }}
-  />
   <main class="pt-8 pb-16 lg:pt-16 lg:pb-24 bg-white dark:bg-gray-900">
     <div class="flex justify-between px-4 mx-auto max-w-screen-xl">
       <article
