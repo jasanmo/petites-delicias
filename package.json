@@ -20,7 +20,7 @@
 		"astro-seo-schema": "3.0.0",
 		"contentful": "10.5.1",
 		"flowbite": "1.8.1",
-		"marked": "7.0.5",
+		"marked": "8.0.0",
 		"tailwindcss": "3.3.3"
 	},
 	"devDependencies": {
@@ -33,6 +33,7 @@
 		"eslint-plugin-import": "2.28.1",
 		"eslint-plugin-n": "16.0.2",
 		"eslint-plugin-promise": "6.1.1",
-		"flowbite-typography": "1.0.3"
+		"flowbite-typography": "1.0.3",
+		"typescript": "5.2.2"
 	}
 }

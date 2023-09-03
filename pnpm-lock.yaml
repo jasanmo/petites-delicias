@@ -73,6 +73,9 @@ devDependencies:
   flowbite-typography:
     specifier: 1.0.3
     version: 1.0.3(tailwindcss@3.3.3)
+  typescript:
+    specifier: ^5.2.2
+    version: 5.2.2
 
 packages:
 
