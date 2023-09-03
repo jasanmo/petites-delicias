@@ -1,5 +1,4 @@
 ---
-import { Schema } from "astro-seo-schema";
 import Header from "./Header.astro";
 import Footer from "./Footer.astro";
 interface Props {
@@ -21,34 +20,7 @@ const { title } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <Schema
-      item={{
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "@id": `${homePage}/#website`,
-        url: `${homePage}`,
-        name: "Petites Delicias",
-        author: {
-          "@type": "Person",
-          name: "",
-        },
-        publisher: {
-          "@type": "Person",
-          name: "Petites Delicias",
-          image: {
-            "@type": "ImageObject",
-            "@id": `${homePage}/#logo`,
-            url: `${homePage}/public/logo-petites-delicias@2x.png`,
-            contentUrl: `${homePage}/public/logo-petites-delicias@2x.png`,
-            caption: "Petites Delicias",
-            inLanguage: "es",
-            width: "361",
-            height: "85",
-          },
-        },
-        inLanguage: "es",
-      }}
-    />
+
     <script
       is:inline
       src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"
