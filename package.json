@@ -13,6 +13,7 @@
 		"@astrojs/deno": "5.0.0",
 		"@astrojs/sitemap": "3.0.0",
 		"@astrojs/tailwind": "5.0.0",
+		"@astrojs/ts-plugin": "^1.1.3",
 		"@contentful/rich-text-from-markdown": "15.16.7",
 		"@contentful/rich-text-html-renderer": "16.1.1",
 		"@contentful/rich-text-types": "16.2.1",
