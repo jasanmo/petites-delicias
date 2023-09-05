@@ -25,7 +25,7 @@ const posts = entries.items.map((item) => {
   } = item.fields;
   const post = {
     title: title,
-    description: marked.lexer(description)[0]?.text,
+    description: marked?.lexer(description)[0]?.text,
     slug: slug,
     publishDate: formatDate(publishDate),
     featuredImage: featuredImage?.fields?.file?.url,
