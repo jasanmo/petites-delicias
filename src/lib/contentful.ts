@@ -1,22 +1,26 @@
-import contentful, { EntryFieldTypes, AssetFields } from "contentful";
+import contentful from "contentful";
+import type { EntryFieldTypes, AssetFields, EntrySys, Entry, EntryLink } from "contentful";
 
 
-export interface RecipePost {
+export type RecipePost = {
   contentTypeId: "recipe";
   fields: {
     title: EntryFieldTypes.Text;
     publishDate: EntryFieldTypes.Date;
     description: EntryFieldTypes.Text;
     slug: EntryFieldTypes.Text;
-    author: EntryFieldTypes.Object;
+    author: EntryFieldTypes.EntryLink<Person>;
     featuredImage: EntryFieldTypes.Object;
-    categories: Array<EntryFieldTypes.Object>;
+    categories: EntryFieldTypes.Array<EntryFieldTypes.EntryResourceLink<Categories>>;
     excerpt: EntryFieldTypes.Text;
   };
 }
 
-export interface Categories {
+export type Categories = {
   contentTypeId: "categories";
+  sys:{
+    id: EntrySys["id"];
+  }
   fields: {
     name: EntryFieldTypes.Text;
     slug: EntryFieldTypes.Text;
@@ -25,8 +29,11 @@ export interface Categories {
   };
 
 }
-export interface Person {
+export type Person = {
   contentTypeId: "person";
+  sys:{
+    id: EntrySys["id"];
+  }
   fields: {
     name: EntryFieldTypes.Text;
     slug: EntryFieldTypes.Text;

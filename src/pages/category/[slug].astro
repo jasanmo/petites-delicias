@@ -3,29 +3,18 @@ import Layout from "../../layouts/Layout.astro";
 import { contentfulClient } from "../../lib/contentful";
 import type { RecipePost, Categories } from "../../lib/contentful";
 import { formatDate } from "../../services/formatDate";
-import { marked } from "marked";
 import Card from "../../components/Card.astro";
 
-let posts;
-let category;
-const { slug } = Astro.params;
-try {
-  const response = await contentfulClient.getEntries<Categories>({
-    content_type: "categories",
-    "fields.slug": slug,
-  });
-  category = response.items[0];
-
+export async function getPosts(categoryId: string) {
   const entries = await contentfulClient.getEntries<RecipePost>({
     content_type: "recipe",
-    "fields.categories.sys.id": category.sys.id,
+    "fields.categories.sys.id": categoryId,
   });
 
-  posts = entries.items.map((item) => {
+  const posts = entries.items.map((item) => {
     const {
       title,
       publishDate,
-      description,
       slug,
       featuredImage,
       categories,
@@ -34,7 +23,6 @@ try {
     } = item.fields;
     const post = {
       title: title,
-      description: marked.lexer(description)[0].text,
       slug: slug,
       publishDate: formatDate(publishDate),
       featuredImage: featuredImage.fields.file.url,
@@ -44,13 +32,32 @@ try {
     };
     return post;
   });
-} catch (error) {
-  console.error(error);
-  return Astro.redirect("/404");
+
+  return posts;
 }
+
+export async function getStaticPaths() {
+  const allCategories = await contentfulClient.getEntries<Categories>({
+    content_type: "categories",
+  });
+
+  console.log(allCategories.items);
+
+  const pages = allCategories.items.map((category) => ({
+    params: { slug: category.fields.slug },
+    props: {
+      name: category.fields.name,
+      id: category.sys.id,
+    },
+  }));
+  return pages;
+}
+
+const posts = await getPosts(Astro.props.id);
+const { name } = Astro.props;
 ---
 
-<Layout title={category.fields.name}>
+<Layout title={name}>
   <main>
     <section class="bg-white dark:bg-gray-900">
       <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
@@ -58,7 +65,7 @@ try {
           <h1
             class="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white"
           >
-            {category.fields.name}
+            {name}
           </h1>
           <p class="font-light text-gray-500 sm:text-xl dark:text-gray-400">
             Recetas francesas y del mundo.

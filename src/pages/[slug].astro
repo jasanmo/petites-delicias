@@ -3,84 +3,49 @@ import Layout from "../layouts/Layout.astro";
 import { contentfulClient } from "../lib/contentful";
 import type { Asset } from "contentful";
 import type { RecipePost, Categories, Person } from "../lib/contentful";
-import { marked, lexer } from "marked";
+import { marked, lexer, parse } from "marked";
 import { formatDate } from "../services/formatDate";
 import Category from "../components/Category.astro";
 import RelatedPost from "../components/RelatedPost.astro";
+import { getRelatedPosts } from "../lib/getRelatedPosts";
 
-let post;
-let ingredients;
-let steps;
-let relatedPosts = [];
-const { slug } = Astro.params;
-try {
-  const data = await contentfulClient.getEntries<RecipePost>({
+export async function getStaticPaths() {
+  const allPosts = await contentfulClient.getEntries<RecipePost>({
     content_type: "recipe",
-    "fields.slug": slug,
   });
-  const {
-    title,
-    description,
-    featuredImage,
-    categories,
-    author,
-    publishDate,
-    excerpt,
-  }: {
-    title: string;
-    description: string;
-    featuredImage: Asset;
-    categories: Categories[];
-    author: Person;
-    publishDate: string;
-    excerpt: string;
-  } = data.items[0].fields;
-
-  post = {
-    title,
-    description: marked.parse(description),
-    featuredImage: featuredImage?.fields?.file?.url,
-    categories: categories?.map(({ fields }) => fields),
-    author: author?.fields?.name,
-    publishDate: formatDate(publishDate),
-    excerpt,
-    contentTokens: lexer(description),
-  };
-
-  const tokens = post.contentTokens;
-
-  const headingIngredientsIndex = tokens.findIndex((token) => {
-    return token?.raw?.toLowerCase().includes("ingredien");
-  });
-  ingredients = tokens[headingIngredientsIndex + 1].items;
-
-  const headingPreparationIndex = tokens.findIndex((token) => {
-    return token?.raw?.toLowerCase().includes("preparaci");
-  });
-  steps = tokens[headingPreparationIndex + 1].items;
-
-  const relatedEntries = await contentfulClient.getEntries<RecipePost>({
-    content_type: "recipe",
-    "fields.categories.sys.id": categories[0].contentTypeId,
-    limit: 4,
-  });
-
-  relatedPosts = relatedEntries?.items.map((item) => {
-    const { title, featuredImage, slug, excerpt } = item.fields;
-    const post = {
-      title: title,
-      slug: slug,
-      excerpt: excerpt,
-      featuredImage: featuredImage.fields.file.url,
-    };
-    return post;
-  });
-} catch (error) {
-  return Astro.redirect("/404");
+  const pages = allPosts.items.map((item) => ({
+    params: { slug: item.fields.slug },
+    props: {
+      title: item.fields.title,
+      //description: parse(item.fields.description),
+      featuredImage: item.fields.featuredImage?.fields?.file?.url,
+      categories: item.fields.categories.map(({ fields }) => fields),
+      author: item.fields.author?.fields?.name,
+      publishDate: formatDate(item.fields.publishDate),
+      excerpt: item.fields.excerpt,
+      //contentTokens: lexer(item.fields.description),
+      relatedPosts: getRelatedPosts(
+        allPosts.items,
+        item.fields.slug,
+        item.fields.categories
+      ),
+    },
+  }));
+  return pages;
 }
+
+const {
+  description,
+  title,
+  publishDate,
+  categories,
+  featuredImage,
+  author,
+  relatedPosts,
+} = Astro.props;
 ---
 
-<Layout title={post?.title}>
+<Layout title={title}>
   <main class="pt-8 pb-16 lg:pt-16 lg:pb-24 bg-white dark:bg-gray-900">
     <div class="flex justify-between px-4 mx-auto max-w-screen-xl">
       <article
@@ -89,7 +54,7 @@ try {
         <header class="mb-4 lg:mb-6 not-format">
           <ul class="flex items-center gap-2 mb-4">
             {
-              post?.categories.map((category: Categories["fields"]) => (
+              categories.map((category: Categories["fields"]) => (
                 <li>
                   <Category
                     name={category?.name}
@@ -102,29 +67,29 @@ try {
           <h1
             class="mb-4 text-3xl font-extrabold leading-tight text-gray-900 lg:mb-6 lg:text-5xl dark:text-white"
           >
-            {post?.title}
+            {title}
           </h1>
           <img
-            src={post?.featuredImage}
+            src={featuredImage}
             alt=""
             class="rounded-lg object-cover max-h-80 w-full mb-7"
           />
           <address class="flex not-italic items-baseline mb-14">
             <p class="text-base font-light text-gray-500 dark:text-gray-400">
               <a
-                href={`/author/${post?.author?.slug}`}
+                href={`/author/${author?.slug}`}
                 rel="author"
                 class="underline hover:text-primary-700"
               >
-                {post?.author?.name}
+                {author?.name}
               </a>
               <time pubdate datetime="2022-02-08" title="February 8th, 2022"
-                >en {post?.publishDate}</time
+                >en {publishDate}</time
               >
             </p>
           </address>
         </header>
-        <div set:html={post?.description} />
+        <div set:html={description} />
       </article>
     </div>
   </main>
@@ -139,12 +104,12 @@ try {
       </h2>
       <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
         {
-          relatedPosts?.map((post) => (
+          relatedPosts?.map(({ fields }) => (
             <RelatedPost
-              title={post?.title}
-              imageUrl={post?.featuredImage}
-              excerpt={post?.excerpt}
-              href={`/${post.slug}`}
+              title={fields?.title}
+              imageUrl={fields?.featuredImage?.fields?.file?.url}
+              excerpt={fields?.excerpt}
+              href={`/${fields.slug}`}
             />
           ))
         }

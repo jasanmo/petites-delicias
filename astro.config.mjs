@@ -7,13 +7,4 @@ import vercel from "@astrojs/vercel/serverless";
 export default defineConfig({
 	site: "https://petitesdelicias.com",
 	integrations: [tailwind(), sitemap()],
-	vite: {
-		ssr: {
-			noExternal: ["astro-seo-schema"],
-		},
-	},
-	adapter: vercel({
-		functionPerRoute: false,
-	}),
-	output: "server",
 });
