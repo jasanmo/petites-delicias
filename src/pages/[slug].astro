@@ -61,20 +61,26 @@ try {
 
   const relatedEntries = await contentfulClient.getEntries<RecipePost>({
     content_type: "recipe",
-    "fields.categories.sys.id": categories[0].contentTypeId,
-    limit: 4,
+    "fields.categories.sys.id": categories[0].sys.id,
+    order: "-fields.publishDate",
   });
 
-  relatedPosts = relatedEntries?.items.map((item) => {
-    const { title, featuredImage, slug, excerpt } = item.fields;
-    const post = {
-      title: title,
-      slug: slug,
-      excerpt: excerpt,
-      featuredImage: featuredImage.fields.file.url,
-    };
-    return post;
+  const filteredentries = relatedEntries?.items.filter((entry) => {
+    return entry.fields.slug !== slug;
   });
+
+  relatedPosts = filteredentries
+    ?.map((item) => {
+      const { title, featuredImage, slug, excerpt } = item.fields;
+      const post = {
+        title: title,
+        slug: slug,
+        excerpt: excerpt,
+        featuredImage: featuredImage.fields.file.url,
+      };
+      return post;
+    })
+    .slice(0, 4);
 } catch (error) {
   return Astro.redirect("/404");
 }
@@ -129,26 +135,30 @@ try {
     </div>
   </main>
 
-  <aside
-    aria-label="Related articles"
-    class="py-8 lg:py-24 bg-gray-50 dark:bg-gray-800"
-  >
-    <div class="px-4 mx-auto max-w-screen-xl">
-      <h2 class="mb-8 text-2xl font-bold text-gray-900 dark:text-white">
-        Más recetas
-      </h2>
-      <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
-        {
-          relatedPosts?.map((post) => (
-            <RelatedPost
-              title={post?.title}
-              imageUrl={post?.featuredImage}
-              excerpt={post?.excerpt}
-              href={`/${post.slug}`}
-            />
-          ))
-        }
-      </div>
-    </div>
-  </aside>
+  {
+    relatedPosts.length < 1 ? (
+      ""
+    ) : (
+      <aside
+        aria-label="Related articles"
+        class="py-8 lg:py-24 bg-gray-50 dark:bg-gray-800"
+      >
+        <div class="px-4 mx-auto max-w-screen-xl">
+          <h2 class="mb-8 text-2xl font-bold text-gray-900 dark:text-white">
+            Más recetas
+          </h2>
+          <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+            {relatedPosts?.map((post) => (
+              <RelatedPost
+                title={post?.title}
+                imageUrl={post?.featuredImage}
+                excerpt={post?.excerpt}
+                href={`/${post.slug}`}
+              />
+            ))}
+          </div>
+        </div>
+      </aside>
+    )
+  }
 </Layout>
