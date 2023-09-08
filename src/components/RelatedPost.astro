@@ -14,7 +14,7 @@ const { href, title, excerpt, imageUrl } = Astro.props;
     <img
       src={imageUrl}
       class="mb-5 rounded-lg max-h-40 object-cover h-44 w-full"
-      alt="Image 1"
+      alt={title}
     />
   </a>
   <h2
@@ -29,8 +29,8 @@ const { href, title, excerpt, imageUrl } = Astro.props;
   </p>
   <a
     href={href}
-    class="inline-flex items-center font-medium underline underline-offset-4 text-primary-600 dark:text-primary-500 hover:no-underline"
+    class="inline-flex items-center font-medium underline underline-offset-4 text-primary-700 dark:text-primary-600 hover:no-underline"
   >
-    Read in 2 minutes
+    Ver la receta
   </a>
 </article>

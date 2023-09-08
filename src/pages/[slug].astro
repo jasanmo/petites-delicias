@@ -42,7 +42,7 @@ try {
     description: marked.parse(description),
     featuredImage: featuredImage?.fields?.file?.url,
     categories: categories?.map(({ fields }) => fields),
-    author: author?.fields?.name,
+    author: author?.fields,
     publishDate: formatDate(publishDate),
     excerpt,
     contentTokens: lexer(description),
@@ -137,7 +137,7 @@ try {
           </h1>
           <img
             src={post?.featuredImage}
-            alt=""
+            alt={post?.title}
             class="rounded-lg object-cover max-h-80 w-full mb-7"
           />
           <address class="flex not-italic items-baseline mb-14">
@@ -146,11 +146,12 @@ try {
                 href={`/author/${post?.author?.slug}`}
                 rel="author"
                 class="underline hover:text-primary-700"
+                title=`Ver recetas de ${post?.author?.name}`
               >
                 {post?.author?.name}
               </a>
-              <time pubdate datetime="2022-02-08" title="February 8th, 2022"
-                >en {post?.publishDate}</time
+              <time pubdate datetime="2022-02-08" title="February 8th, 2022">
+                en {post?.publishDate}</time
               >
             </p>
           </address>
