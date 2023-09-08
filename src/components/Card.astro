@@ -28,17 +28,18 @@ const { href, title, body, date, imageUrl, author, categories } = Astro.props;
     </div>
     <span class="text-sm">{date}</span>
   </div>
-  <a href={href}>
+  <a href={href} title={title}>
     <img
       class="rounded-lg object-cover max-h-80 w-full mb-7"
       src={imageUrl}
       loading="lazy"
+      alt={title}
     />
   </a>
   <h2
     class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
   >
-    <a href={href}>{title}</a>
+    <a href={href} title={title}>{title}</a>
   </h2>
   <p
     class="mb-5 font-light text-gray-500 dark:text-gray-400 line-clamp-3 text-ellipsis"
@@ -51,7 +52,7 @@ const { href, title, body, date, imageUrl, author, categories } = Astro.props;
       href={href}
       class="inline-flex items-center font-medium text-primary-600 dark:text-primary-500 hover:underline"
     >
-      Read more
+      Ver la receta
       <svg
         class="ml-2 w-4 h-4"
         fill="currentColor"

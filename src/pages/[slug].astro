@@ -71,7 +71,7 @@ const {
           </h1>
           <img
             src={featuredImage}
-            alt=""
+            alt={title}
             class="rounded-lg object-cover max-h-80 w-full mb-7"
           />
           <address class="flex not-italic items-baseline mb-14">
@@ -80,11 +80,12 @@ const {
                 href={`/author/${author?.slug}`}
                 rel="author"
                 class="underline hover:text-primary-700"
+                title=`Ver recetas de ${author?.name}`
               >
                 {author?.name}
               </a>
-              <time pubdate datetime="2022-02-08" title="February 8th, 2022"
-                >en {publishDate}</time
+              <time pubdate datetime="2022-02-08" title="February 8th, 2022">
+                en {publishDate}</time
               >
             </p>
           </address>
@@ -93,27 +94,30 @@ const {
       </article>
     </div>
   </main>
-
-  <aside
-    aria-label="Related articles"
-    class="py-8 lg:py-24 bg-gray-50 dark:bg-gray-800"
-  >
-    <div class="px-4 mx-auto max-w-screen-xl">
-      <h2 class="mb-8 text-2xl font-bold text-gray-900 dark:text-white">
-        Más recetas
-      </h2>
-      <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
-        {
-          relatedPosts?.map(({ fields }) => (
-            <RelatedPost
-              title={fields?.title}
-              imageUrl={fields?.featuredImage?.fields?.file?.url}
-              excerpt={fields?.excerpt}
-              href={`/${fields.slug}`}
-            />
-          ))
-        }
-      </div>
-    </div>
-  </aside>
+  {
+    relatedPosts.length < 1 ? (
+      ""
+    ) : (
+      <aside
+        aria-label="Related articles"
+        class="py-8 lg:py-24 bg-gray-50 dark:bg-gray-800"
+      >
+        <div class="px-4 mx-auto max-w-screen-xl">
+          <h2 class="mb-8 text-2xl font-bold text-gray-900 dark:text-white">
+            Más recetas
+          </h2>
+          <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+            {relatedPosts?.map((post) => (
+              <RelatedPost
+                title={post?.title}
+                imageUrl={post?.featuredImage}
+                excerpt={post?.excerpt}
+                href={`/${post.slug}`}
+              />
+            ))}
+          </div>
+        </div>
+      </aside>
+    )
+  }
 </Layout>
