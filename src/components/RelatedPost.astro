@@ -15,6 +15,7 @@ const { href, title, excerpt, imageUrl } = Astro.props;
       src={imageUrl}
       class="mb-5 rounded-lg max-h-40 object-cover h-44 w-full"
       alt={title}
+      loading="lazy"
     />
   </a>
   <h2
