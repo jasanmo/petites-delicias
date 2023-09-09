@@ -39,7 +39,7 @@
 <div
   style="max-height: 80vh;"
   id="results"
-  class="absolute top-16 w-80 right-4 bg-white grid gap-3 overflow-auto rounded-lg border border-gray-200 shadow-md [&:not(> *)]:hidden"
+  class="absolute top-16 w-80 right-4 bg-white grid gap-3 overflow-auto rounded-lg border border-gray-200 shadow-md"
 >
 </div>
 
@@ -75,5 +75,11 @@ document.querySelector("#search")?.addEventListener("input", async (e) => {
 <style>
   #results:not(:has(a)) {
     display: none;
+  }
+
+  @media (max-width: 360px) {
+    form div div {
+      max-width: 160px;
+    }
   }
 </style>
