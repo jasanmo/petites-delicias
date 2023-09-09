@@ -30,7 +30,7 @@ const { href, title, body, date, imageUrl, author, categories } = Astro.props;
   </div>
   <a href={href} title={title}>
     <img
-      class="rounded-lg object-cover max-h-80 w-full mb-7"
+      class="rounded-lg object-cover max-h-80 w-full mb-7 aspect-video"
       src={imageUrl}
       loading="lazy"
       alt={title}
