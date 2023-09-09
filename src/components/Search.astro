@@ -1,0 +1,79 @@
+---
+
+---
+
+<form>
+  <div class="flex">
+    <div class="relative w-full">
+      <input
+        type="text"
+        id="search"
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-5 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+        placeholder="Buscar..."
+        required
+      />
+      <button
+        type="submit"
+        class="absolute top-0 right-0 p-2.5 text-sm font-medium h-full text-white bg-primary-700 rounded-r-lg border border-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+      >
+        <svg
+          class="w-4 h-4"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 20 20"
+        >
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"></path>
+        </svg>
+        <span class="sr-only">Buscar</span>
+      </button>
+    </div>
+  </div>
+</form>
+
+<div
+  style="max-height: 80vh;"
+  id="results"
+  class="absolute top-16 w-80 right-4 bg-white grid gap-3 overflow-auto rounded-lg border border-gray-200 shadow-md [&:not(> *)]:hidden"
+>
+</div>
+
+<script is:inline>
+document.querySelector("#search")?.addEventListener("input", async (e) => {
+  // only load the pagefind script once
+  if (e.target.dataset.loaded !== "true") {
+    e.target.dataset.loaded = "true";
+    // load the pagefind script
+    window.pagefind = await import("/pagefind/pagefind.js");
+  }
+
+  // search the index using the input value
+  const search = await window.pagefind.search(e.target.value);
+
+  console.log(search);
+
+  // clear the old results
+  document.querySelector("#results").innerHTML = "";
+
+  // add the new results
+  for (const result of search.results) {
+    const data = await result.data();
+    document.querySelector("#results").innerHTML += `
+        <a href="${data.url}" class="p-4 border-b border-gray-200 font-semibold">
+          <h3 class="text-gray-900">${data.meta.title}</h3>
+          <p class="line-clamp-2 text-ellipsis font-normal">${data.excerpt}</p>
+        </a>`;
+  }
+});
+</script>
+
+<style>
+  #results:not(:has(a)) {
+    display: none;
+  }
+</style>
